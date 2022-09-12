@@ -4,8 +4,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.model_selection import train_test_split
-from sklearn.ensemble import RandomForestRegressor
 from sklearn import metrics
+from sklearn.linear_model import LinearRegression
 #Carga de archivo csv en un dataframe
 file = 'AirQuality.csv'
 dataset = pd.read_csv(file, sep=';')
@@ -114,19 +114,19 @@ X = dataset_filt.drop(['PT08.S1(CO)','Date', 'Time', 'Week Day'], axis=1)
 X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2, random_state=42)
 print(X_train.shape, X_test.shape)
 
-modelo_randomforest = RandomForestRegressor(n_estimators=100)
-modelo_randomforest.fit(X_train, Y_train)
+modelo = LinearRegression()
+modelo.fit(X = np.array(X_train), y = Y_train)
+pred_modelo = modelo.predict(X_test)#Concentraciones de CO pronosticadas
 
 #Evaluando los resultados con la métrica R²:
 #Evaluación de datos de prueba
 
-pred_randomforest = modelo_randomforest.predict(X_test) #Concentraciones de CO pronosticadas
-print('Modelo de regresión de bosque aleatorio: R²={:.2f}'.format(metrics.r2_score(Y_test, pred_randomforest)))
+print('Modelo de regresión de bosque aleatorio: R²={:.2f}'.format(metrics.r2_score(Y_test, pred_modelo)))
 
 #Comparación de las predicciones del modelo con los datos reales
 aux = pd.DataFrame()
 aux['Y_test'] = Y_test
-aux['Pronósticos BosqueAleatorio_01'] = pred_randomforest
+aux['Pronósticos Modelo_01'] = pred_modelo
 plt.figure(figsize=(15,5))
 sns.lineplot(data=aux.iloc[:200,:])
 plt.show()
@@ -163,16 +163,16 @@ X_2_train, X_2_test, Y_2_train, Y_2_test = train_test_split(X_2, Y_2, test_size=
 X_2.head()
 
 #Nuevo modelo con estaciones
-modelo_randomforest_2 = RandomForestRegressor()
-modelo_randomforest_2.fit(X_2_train, Y_2_train)
+modelo_2 = LinearRegression()
+modelo_2.fit(X_2_train, Y_2_train)
 
-pred_randomforest_2 = modelo_randomforest_2.predict(X_2_test)
+pred_modelo_2 = modelo_2.predict(X_2_test)
 
-print('Modelo de regresión sin estaciones: R²={:.2f}'.format(metrics.r2_score(Y_test, pred_randomforest)))
-print('Modelo de regresión con estaciones: R²={:.2f}'.format(metrics.r2_score(Y_2_test, pred_randomforest_2)))
+print('Modelo de regresión sin estaciones: R²={:.2f}'.format(metrics.r2_score(Y_test, pred_modelo)))
+print('Modelo de regresión con estaciones: R²={:.2f}'.format(metrics.r2_score(Y_2_test, pred_modelo_2)))
 
 #Comparación de las predicciones del nuevo modelo con los datos reales y el modelo sin estaciones
-aux['Pronósticos BosqueAleatorio_02'] = pred_randomforest_2
+aux['Pronósticos Modelo_02'] = pred_modelo_2
 plt.figure(figsize=(15,5))
 sns.lineplot(data=aux.iloc[:200,:])
 plt.show()
