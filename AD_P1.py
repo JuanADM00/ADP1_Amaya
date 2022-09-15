@@ -121,7 +121,7 @@ pred_modelo = modelo.predict(X_test)#Concentraciones de CO pronosticadas
 #Evaluando los resultados con la métrica R²:
 #Evaluación de datos de prueba
 
-print('Modelo de regresión de bosque aleatorio: R²={:.2f}'.format(metrics.r2_score(Y_test, pred_modelo)))
+print('Modelo de regresión lineal: R²={:.2f}'.format(metrics.r2_score(Y_test, pred_modelo)))
 
 #Comparación de las predicciones del modelo con los datos reales
 aux = pd.DataFrame()
